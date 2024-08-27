@@ -12,29 +12,32 @@ local TextBox = Instance.new("TextBox")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local ConsoleToggle = Instance.new("TextButton")
+local ConsoleFrame = Instance.new("Frame")
 local ConsoleTextBox = Instance.new("TextBox")
 local CloseButton = Instance.new("TextButton")
 local CreditsToggle = Instance.new("TextButton")
 local CreditsTextBox = Instance.new("TextBox")
-
+local v = 1
 ScreenGui.Name = "FluxusAndroidUI"
 ScreenGui.Parent = CoreGui
 
 -- Main Frame setup
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Frame.Size = UDim2.new(0, 50, 0, 50) -- Start in collapsed state
-Frame.Position = UDim2.new(1, -55, 0, 5) -- Start position for collapsed state
+Frame.Size = UDim2.new(0, 750, 0, 700)
+Frame.Position = UDim2.new(0.5, -375, 0.5, -350)
+Frame.Visible = false
 
 UICorner.Parent = Frame
 UICorner.CornerRadius = UDim.new(0, 20)
 
 -- Image Label setup
-ImageLabel.Parent = Frame
+ImageLabel.Parent = ScreenGui
 ImageLabel.Size = UDim2.new(0, 50, 0, 50)
-ImageLabel.Position = UDim2.new(0, 0, 0, 0)
+ImageLabel.Position = UDim2.new(1, -55, 0, 5)
 ImageLabel.Image = "rbxassetid://13327193518" -- Replace with your AssetID
 ImageLabel.BackgroundTransparency = 1
+ImageLabel.Visible = true
 
 -- Toggle Button setup
 ToggleButton.Parent = Frame
@@ -89,23 +92,20 @@ local ClearUICorner = Instance.new("UICorner")
 ClearUICorner.CornerRadius = UDim.new(0, 10)
 ClearUICorner.Parent = ClearButton
 
--- Console Toggle Button setup
-ConsoleToggle.Parent = Frame
-ConsoleToggle.Size = UDim2.new(0, 100, 0, 30)
-ConsoleToggle.Position = UDim2.new(0, 5, 0, 100)
-ConsoleToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ConsoleToggle.Text = "Console"
-ConsoleToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-ConsoleToggle.Font = Enum.Font.SourceSans
+-- Console Frame setup
+ConsoleFrame.Parent = Frame
+ConsoleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ConsoleFrame.Size = UDim2.new(0, 250, 1, -10)
+ConsoleFrame.Position = UDim2.new(0, 5, 0, 5)
 
-local ConsoleToggleUICorner = Instance.new("UICorner")
-ConsoleToggleUICorner.CornerRadius = UDim.new(0, 10)
-ConsoleToggleUICorner.Parent = ConsoleToggle
+local ConsoleFrameUICorner = Instance.new("UICorner")
+ConsoleFrameUICorner.CornerRadius = UDim.new(0, 10)
+ConsoleFrameUICorner.Parent = ConsoleFrame
 
 -- Console TextBox setup
-ConsoleTextBox.Parent = Frame
-ConsoleTextBox.Size = UDim2.new(1, -20, 0.4, -10)
-ConsoleTextBox.Position = UDim2.new(0, 10, 0, 150)
+ConsoleTextBox.Parent = ConsoleFrame
+ConsoleTextBox.Size = UDim2.new(1, -10, 1, -10)
+ConsoleTextBox.Position = UDim2.new(0, 5, 0, 5)
 ConsoleTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 ConsoleTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 ConsoleTextBox.Font = Enum.Font.Code
@@ -114,11 +114,6 @@ ConsoleTextBox.TextYAlignment = Enum.TextYAlignment.Top
 ConsoleTextBox.ClearTextOnFocus = false
 ConsoleTextBox.TextEditable = false
 ConsoleTextBox.TextWrapped = true
-ConsoleTextBox.Visible = false
-
-local ConsoleTextBoxUICorner = Instance.new("UICorner")
-ConsoleTextBoxUICorner.CornerRadius = UDim.new(0, 10)
-ConsoleTextBoxUICorner.Parent = ConsoleTextBox
 
 -- Close Button setup
 CloseButton.Parent = Frame
@@ -129,6 +124,7 @@ CloseButton.Text = "X"
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseButton.Font = Enum.Font.SourceSans
 CloseButton.TextSize = 20
+CloseButton.Visible = false
 
 local CloseUICorner = Instance.new("UICorner")
 CloseUICorner.CornerRadius = UDim.new(0, 15)
@@ -159,7 +155,7 @@ CreditsTextBox.TextYAlignment = Enum.TextYAlignment.Top
 CreditsTextBox.ClearTextOnFocus = false
 CreditsTextBox.TextEditable = false
 CreditsTextBox.TextWrapped = true
-CreditsTextBox.Text = "Credits:\n- Developer: [Fluxteam]\n- download link: [flux.li]"
+CreditsTextBox.Text = "Credits:\n- Developer: [Drop56796]\n- Version :" .. v
 CreditsTextBox.Visible = false
 
 local CreditsTextBoxUICorner = Instance.new("UICorner")
@@ -168,6 +164,7 @@ CreditsTextBoxUICorner.Parent = CreditsTextBox
 
 -- Function to animate UI
 local function expandUI()
+    Frame.Visible = true
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local goal = {Size = UDim2.new(0, 750, 0, 700), Position = UDim2.new(0.5, -375, 0.5, -350)}
     local tween = TweenService:Create(Frame, tweenInfo, goal)
@@ -175,51 +172,45 @@ local function expandUI()
 end
 
 local function collapseUI()
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local goal = {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(1, -55, 0, 5)}
     local tween = TweenService:Create(Frame, tweenInfo, goal)
     tween:Play()
+    tween.Completed:Connect(function()
+        Frame.Visible = false
+        ImageLabel.Visible = true
+    end)
 end
-
-local isExpanded = false
 
 -- Toggle Button Functionality
 ToggleButton.MouseButton1Click:Connect(function()
-    if isExpanded then
-        TextBox.Visible = not TextBox.Visible
-        ExecuteButton.Visible = not ExecuteButton.Visible
-        ClearButton.Visible = not ClearButton.Visible
-    end
-end)
-
--- Clear Button Functionality
-ClearButton.MouseButton1Click:Connect(function()
-    TextBox.Text = ""
-end)
-
--- Execute Button Functionality
-ExecuteButton.MouseButton1Click:Connect(function()
-    local code = TextBox.Text
-    
-    -- Custom action logic here
-    print("Executing code:")
-    print(code)
-
-    local success, errorMsg = pcall(function()
-        local func = loadstring(code)
-        if func then
-            func()
-        end
-    end)
-    
-    if not success then
-        warn("Error executing code: " .. errorMsg)
+    if Frame.Visible then
+        collapseUI()
+    else
+        expandUI()
+        ImageLabel.Visible = false
     end
 end)
 
 -- Console Toggle Button Functionality
 ConsoleToggle.MouseButton1Click:Connect(function()
-    ConsoleTextBox.Visible = not ConsoleTextBox.Visible
+    ConsoleFrame.Visible = not ConsoleFrame.Visible
+end)
+
+-- Clear Console TextBox
+ClearButton.MouseButton1Click:Connect(function()
+    ConsoleTextBox.Text = ""
+end)
+
+-- Close Button Functionality
+CloseButton.MouseButton1Click:Connect(function()
+    collapseUI()
+    ImageLabel.Visible = true
+end)
+
+-- ImageLabel Functionality
+ImageLabel.MouseButton1Click:Connect(function()
+    expandUI()
 end)
 
 -- Credits Toggle Button Functionality
@@ -227,44 +218,15 @@ CreditsToggle.MouseButton1Click:Connect(function()
     CreditsTextBox.Visible = not CreditsTextBox.Visible
 end)
 
--- Close Button Functionality
-CloseButton.MouseButton1Click:Connect(function()
-    if isExpanded then
-        collapseUI()
-        isExpanded = false
-        ToggleButton.Visible = false
-        ConsoleToggle.Visible = false
-        CreditsToggle.Visible = false
-        TextBox.Visible = false
-        ExecuteButton.Visible = false
-        ClearButton.Visible = false
-        ConsoleTextBox.Visible = false
-        CreditsTextBox.Visible = false
-    else
-        expandUI()
-        isExpanded = true
-        ToggleButton.Visible = true
-        ConsoleToggle.Visible = true
-        CreditsToggle.Visible = true
-    end
-end)
-
--- Append messages to the console
-local function appendToConsole(message, color)
-    local currentText = ConsoleTextBox.Text
-    ConsoleTextBox.Text = currentText .. message .. "\n"
-    ConsoleTextBox.TextColor3 = color
+-- Output Function for Console
+local function outputToConsole(message)
+    ConsoleTextBox.Text = ConsoleTextBox.Text .. message .. "\n"
 end
 
--- Capture LogService messages
-LogService.MessageOut:Connect(function(message, messageType)
-    local color
-    if messageType == Enum.MessageType.Info then
-        color = Color3.fromRGB(255, 255, 255) -- White
-    elseif messageType == Enum.MessageType.Warning then
-        color = Color3.fromRGB(255, 255, 0) -- Yellow
-    elseif messageType == Enum.MessageType.Error then
-        color = Color3.fromRGB(255, 0, 0) -- Red
-    end
-    appendToConsole("[" .. messageType.Name .. "] " .. message, color)
-end)
+-- Example usage
+local function onLogAdded(message, messageType)
+    local formattedMessage = "[" .. messageType.Name .. "] " .. message
+    outputToConsole(formattedMessage)
+end
+
+LogService.MessageOut:Connect(onLogAdded)
