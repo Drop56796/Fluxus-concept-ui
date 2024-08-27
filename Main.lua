@@ -167,7 +167,7 @@ CreditsTextBox.TextYAlignment = Enum.TextYAlignment.Top
 CreditsTextBox.ClearTextOnFocus = false
 CreditsTextBox.TextEditable = false
 CreditsTextBox.TextWrapped = true
-CreditsTextBox.Text = "Credits:\n- Developer: [Your Name]\n- Additional Contributions: [Names]"
+CreditsTextBox.Text = "Credits:\n Creator: [Drop56796]"
 CreditsTextBox.Visible = false
 
 local CreditsTextBoxUICorner = Instance.new("UICorner")
