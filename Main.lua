@@ -7,7 +7,7 @@ local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
 local ToggleButton = Instance.new("TextButton")
-local ImageButton = Instance.new("TextButton") -- Changed from ImageLabel to TextButton
+local ImageButton = Instance.new("ImageButton") -- Changed from TextButton to ImageButton
 local TextBox = Instance.new("TextBox")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
@@ -29,20 +29,16 @@ Frame.Position = UDim2.new(1, -55, 0, 5) -- Start position for collapsed state
 UICorner.Parent = Frame
 UICorner.CornerRadius = UDim.new(0, 20)
 
--- Image Button setup (replacing ImageLabel)
+-- Image Button setup
 ImageButton.Parent = Frame
 ImageButton.Size = UDim2.new(0, 50, 0, 50)
 ImageButton.Position = UDim2.new(0, 0, 0, 0)
-ImageButton.Text = "" -- No text, to resemble an ImageLabel
-ImageButton.BackgroundTransparency = 0.5
-ImageButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100) -- Background color for visual feedback
+ImageButton.Image = "rbxassetid://13327193518" -- Replace with your AssetID
+ImageButton.BackgroundTransparency = 1 -- Transparent background to show only the image
 
 local imageButtonUICorner = Instance.new("UICorner")
 imageButtonUICorner.CornerRadius = UDim.new(0, 20)
 imageButtonUICorner.Parent = ImageButton
-
--- Replace this with your desired image
-ImageButton.Image = "rbxassetid://13327193518"
 
 -- Toggle Button setup
 ToggleButton.Parent = Frame
@@ -136,6 +132,51 @@ CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 CloseButton.Text = "X"
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseButton.Font = Enum.Font.SourceSans
+ClearButton.Visible = false
+
+local ClearUICorner = Instance.new("UICorner")
+ClearUICorner.CornerRadius = UDim.new(0, 10)
+ClearUICorner.Parent = ClearButton
+
+-- Console Toggle Button setup
+ConsoleToggle.Parent = Frame
+ConsoleToggle.Size = UDim2.new(0, 100, 0, 30)
+ConsoleToggle.Position = UDim2.new(0, 5, 0, 100)
+ConsoleToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ConsoleToggle.Text = "Console"
+ConsoleToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+ConsoleToggle.Font = Enum.Font.SourceSans
+
+local ConsoleToggleUICorner = Instance.new("UICorner")
+ConsoleToggleUICorner.CornerRadius = UDim.new(0, 10)
+ConsoleToggleUICorner.Parent = ConsoleToggle
+
+-- Console TextBox setup
+ConsoleTextBox.Parent = Frame
+ConsoleTextBox.Size = UDim2.new(1, -20, 0.4, -10)
+ConsoleTextBox.Position = UDim2.new(0, 10, 0, 150)
+ConsoleTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+ConsoleTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+ConsoleTextBox.Font = Enum.Font.Code
+ConsoleTextBox.TextXAlignment = Enum.TextXAlignment.Left
+ConsoleTextBox.TextYAlignment = Enum.TextYAlignment.Top
+ConsoleTextBox.ClearTextOnFocus = false
+ConsoleTextBox.TextEditable = false
+ConsoleTextBox.TextWrapped = true
+ConsoleTextBox.Visible = false
+
+local ConsoleTextBoxUICorner = Instance.new("UICorner")
+ConsoleTextBoxUICorner.CornerRadius = UDim.new(0, 10)
+ConsoleTextBoxUICorner.Parent = ConsoleTextBox
+
+-- Close Button setup
+CloseButton.Parent = Frame
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.SourceSans
 CloseButton.TextSize = 20
 
 local CloseUICorner = Instance.new("UICorner")
@@ -167,7 +208,7 @@ CreditsTextBox.TextYAlignment = Enum.TextYAlignment.Top
 CreditsTextBox.ClearTextOnFocus = false
 CreditsTextBox.TextEditable = false
 CreditsTextBox.TextWrapped = true
-CreditsTextBox.Text = "Credits:\n Creator: [Drop56796]"
+CreditsTextBox.Text = "Credits:\n- Dev: [Drop56796]\n hi user welcome use or back :D"
 CreditsTextBox.Visible = false
 
 local CreditsTextBoxUICorner = Instance.new("UICorner")
