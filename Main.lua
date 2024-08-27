@@ -6,13 +6,12 @@ local TweenService = game:GetService("TweenService")
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
-local IconButton = Instance.new("ImageButton") -- Changed from ImageLabel to ImageButton
 local ToggleButton = Instance.new("TextButton")
+local ImageButton = Instance.new("TextButton") -- Changed from ImageLabel to TextButton
 local TextBox = Instance.new("TextBox")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local ConsoleToggle = Instance.new("TextButton")
-local ConsoleFrame = Instance.new("Frame")
 local ConsoleTextBox = Instance.new("TextBox")
 local CloseButton = Instance.new("TextButton")
 local CreditsToggle = Instance.new("TextButton")
@@ -24,20 +23,26 @@ ScreenGui.Parent = CoreGui
 -- Main Frame setup
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Frame.Size = UDim2.new(0, 750, 0, 700)
-Frame.Position = UDim2.new(0.5, -375, 0.5, -350)
-Frame.Visible = false
+Frame.Size = UDim2.new(0, 50, 0, 50) -- Start in collapsed state
+Frame.Position = UDim2.new(1, -55, 0, 5) -- Start position for collapsed state
 
 UICorner.Parent = Frame
 UICorner.CornerRadius = UDim.new(0, 20)
 
--- Icon Button setup
-IconButton.Parent = ScreenGui
-IconButton.Size = UDim2.new(0, 50, 0, 50)
-IconButton.Position = UDim2.new(1, -55, 0, 5)
-IconButton.BackgroundTransparency = 1
-IconButton.Image = "rbxassetid://13327193518" -- Replace with your AssetID for the icon
-IconButton.Visible = true
+-- Image Button setup (replacing ImageLabel)
+ImageButton.Parent = Frame
+ImageButton.Size = UDim2.new(0, 50, 0, 50)
+ImageButton.Position = UDim2.new(0, 0, 0, 0)
+ImageButton.Text = "" -- No text, to resemble an ImageLabel
+ImageButton.BackgroundTransparency = 0.5
+ImageButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100) -- Background color for visual feedback
+
+local imageButtonUICorner = Instance.new("UICorner")
+imageButtonUICorner.CornerRadius = UDim.new(0, 20)
+imageButtonUICorner.Parent = ImageButton
+
+-- Replace this with your desired image
+ImageButton.Image = "rbxassetid://13327193518"
 
 -- Toggle Button setup
 ToggleButton.Parent = Frame
@@ -92,20 +97,23 @@ local ClearUICorner = Instance.new("UICorner")
 ClearUICorner.CornerRadius = UDim.new(0, 10)
 ClearUICorner.Parent = ClearButton
 
--- Console Frame setup
-ConsoleFrame.Parent = Frame
-ConsoleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-ConsoleFrame.Size = UDim2.new(0, 250, 1, -10)
-ConsoleFrame.Position = UDim2.new(0, 5, 0, 5)
+-- Console Toggle Button setup
+ConsoleToggle.Parent = Frame
+ConsoleToggle.Size = UDim2.new(0, 100, 0, 30)
+ConsoleToggle.Position = UDim2.new(0, 5, 0, 100)
+ConsoleToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ConsoleToggle.Text = "Console"
+ConsoleToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+ConsoleToggle.Font = Enum.Font.SourceSans
 
-local ConsoleFrameUICorner = Instance.new("UICorner")
-ConsoleFrameUICorner.CornerRadius = UDim.new(0, 10)
-ConsoleFrameUICorner.Parent = ConsoleFrame
+local ConsoleToggleUICorner = Instance.new("UICorner")
+ConsoleToggleUICorner.CornerRadius = UDim.new(0, 10)
+ConsoleToggleUICorner.Parent = ConsoleToggle
 
 -- Console TextBox setup
-ConsoleTextBox.Parent = ConsoleFrame
-ConsoleTextBox.Size = UDim2.new(1, -10, 1, -10)
-ConsoleTextBox.Position = UDim2.new(0, 5, 0, 5)
+ConsoleTextBox.Parent = Frame
+ConsoleTextBox.Size = UDim2.new(1, -20, 0.4, -10)
+ConsoleTextBox.Position = UDim2.new(0, 10, 0, 150)
 ConsoleTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 ConsoleTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 ConsoleTextBox.Font = Enum.Font.Code
@@ -114,22 +122,30 @@ ConsoleTextBox.TextYAlignment = Enum.TextYAlignment.Top
 ConsoleTextBox.ClearTextOnFocus = false
 ConsoleTextBox.TextEditable = false
 ConsoleTextBox.TextWrapped = true
+ConsoleTextBox.Visible = false
+
+local ConsoleTextBoxUICorner = Instance.new("UICorner")
+ConsoleTextBoxUICorner.CornerRadius = UDim.new(0, 10)
+ConsoleTextBoxUICorner.Parent = ConsoleTextBox
 
 -- Close Button setup
 CloseButton.Parent = Frame
-CloseButton.Size = UDim2.new(0, 50, 0, 50)
-CloseButton.Position = UDim2.new(1, -55, 0, 5)
-CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0) -- Red color for visibility
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
 CloseButton.Text = "X"
 CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseButton.Font = Enum.Font.SourceSans
-CloseButton.TextSize = 24
-CloseButton.Visible = false
+CloseButton.TextSize = 20
+
+local CloseUICorner = Instance.new("UICorner")
+CloseUICorner.CornerRadius = UDim.new(0, 15)
+CloseUICorner.Parent = CloseButton
 
 -- Credits Toggle Button setup
 CreditsToggle.Parent = Frame
 CreditsToggle.Size = UDim2.new(0, 100, 0, 30)
-CreditsToggle.Position = UDim2.new(0, 5, 0, 100)
+CreditsToggle.Position = UDim2.new(0, 5, 0, 150)
 CreditsToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 CreditsToggle.Text = "Credits"
 CreditsToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -137,13 +153,13 @@ CreditsToggle.Font = Enum.Font.SourceSans
 
 local CreditsToggleUICorner = Instance.new("UICorner")
 CreditsToggleUICorner.CornerRadius = UDim.new(0, 10)
-CreditsToggleUICorner.Parent = CreditsToggle
+CreditsToggle.Parent = CreditsToggle
 
 -- Credits TextBox setup
 CreditsTextBox.Parent = Frame
-CreditsTextBox.Size = UDim2.new(0, 600, 0.4, -10)
-CreditsTextBox.Position = UDim2.new(0, 110, 0, 100)
-CreditsTextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+CreditsTextBox.Size = UDim2.new(1, -20, 0.4, -10)
+CreditsTextBox.Position = UDim2.new(0, 10, 0, 150)
+CreditsTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 CreditsTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 CreditsTextBox.Font = Enum.Font.Code
 CreditsTextBox.TextXAlignment = Enum.TextXAlignment.Left
@@ -151,14 +167,15 @@ CreditsTextBox.TextYAlignment = Enum.TextYAlignment.Top
 CreditsTextBox.ClearTextOnFocus = false
 CreditsTextBox.TextEditable = false
 CreditsTextBox.TextWrapped = true
-CreditsTextBox.Text = "Credits:\n Developer: [Drop56796]"
+CreditsTextBox.Text = "Credits:\n- Developer: [Your Name]\n- Additional Contributions: [Names]"
 CreditsTextBox.Visible = false
 
--- Expand and Collapse UI Animations
+local CreditsTextBoxUICorner = Instance.new("UICorner")
+CreditsTextBoxUICorner.CornerRadius = UDim.new(0, 10)
+CreditsTextBoxUICorner.Parent = CreditsTextBox
+
+-- Function to animate UI
 local function expandUI()
-    Frame.Visible = true
-    IconButton.Visible = false
-    
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local goal = {Size = UDim2.new(0, 750, 0, 700), Position = UDim2.new(0.5, -375, 0.5, -350)}
     local tween = TweenService:Create(Frame, tweenInfo, goal)
@@ -166,43 +183,21 @@ local function expandUI()
 end
 
 local function collapseUI()
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
     local goal = {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(1, -55, 0, 5)}
     local tween = TweenService:Create(Frame, tweenInfo, goal)
     tween:Play()
-    tween.Completed:Connect(function()
-        Frame.Visible = false
-        IconButton.Visible = true
-    end)
 end
+
+local isExpanded = false
 
 -- Toggle Button Functionality
 ToggleButton.MouseButton1Click:Connect(function()
-    if Frame.Visible then
-        collapseUI()
-    else
-        expandUI()
+    if isExpanded then
+        TextBox.Visible = not TextBox.Visible
+        ExecuteButton.Visible = not ExecuteButton.Visible
+        ClearButton.Visible = not ClearButton.Visible
     end
-end)
-
--- Console Toggle Button Functionality
-ConsoleToggle.MouseButton1Click:Connect(function()
-    ConsoleFrame.Visible = not ConsoleFrame.Visible
-end)
-
--- Credits Toggle Button Functionality
-CreditsToggle.MouseButton1Click:Connect(function()
-    CreditsTextBox.Visible = not CreditsTextBox.Visible
-end)
-
--- Close Button Functionality
-CloseButton.MouseButton1Click:Connect(function()
-    collapseUI()
-end)
-
--- Icon Button Functionality
-IconButton.MouseButton1Click:Connect(function()
-    expandUI()
 end)
 
 -- Clear Button Functionality
@@ -213,6 +208,8 @@ end)
 -- Execute Button Functionality
 ExecuteButton.MouseButton1Click:Connect(function()
     local code = TextBox.Text
+    
+    -- Custom action logic here
     print("Executing code:")
     print(code)
 
@@ -225,6 +222,45 @@ ExecuteButton.MouseButton1Click:Connect(function()
     
     if not success then
         warn("Error executing code: " .. errorMsg)
+    end
+end)
+
+-- Console Toggle Button Functionality
+ConsoleToggle.MouseButton1Click:Connect(function()
+    ConsoleTextBox.Visible = not ConsoleTextBox.Visible
+end)
+
+-- Credits Toggle Button Functionality
+CreditsToggle.MouseButton1Click:Connect(function()
+    CreditsTextBox.Visible = not CreditsTextBox.Visible
+end)
+
+-- Close Button Functionality
+CloseButton.MouseButton1Click:Connect(function()
+    if isExpanded then
+        CloseButton.Visible = false
+        CloseButton.Active = false
+        ImageButton.Active = true -- Enable the image button to be clicked
+        TextBox.Visible = false
+        ExecuteButton.Visible = false
+        ClearButton.Visible = false
+        ConsoleTextBox.Visible = false
+        CreditsTextBox.Visible = false
+    else
+        expandUI()
+        isExpanded = true
+        ToggleButton.Visible = true
+        ConsoleToggle.Visible = true
+        CreditsToggle.Visible = true
+    end
+end)
+
+-- Image Button Functionality
+ImageButton.MouseButton1Click:Connect(function()
+    if not CloseButton.Visible then
+        CloseButton.Visible = true
+        CloseButton.Active = true
+        ImageButton.Active = false -- Disable the image button to prevent further clicks
     end
 end)
 
