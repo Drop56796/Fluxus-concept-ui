@@ -1,7 +1,6 @@
 local CoreGui = game:GetService("CoreGui")
 local LogService = game:GetService("LogService")
 local TweenService = game:GetService("TweenService")
-local UserInputService = game:GetService("UserInputService")
 
 -- Create UI components
 local ScreenGui = Instance.new("ScreenGui")
@@ -22,8 +21,8 @@ ScreenGui.Parent = CoreGui
 -- Main Frame setup
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Frame.Size = UDim2.new(0, 750, 0, 700)
-Frame.Position = UDim2.new(0.5, -375, 0.5, -350)
+Frame.Size = UDim2.new(0, 50, 0, 50) -- Start in collapsed state
+Frame.Position = UDim2.new(1, -55, 0, 5) -- Start position for collapsed state
 
 UICorner.Parent = Frame
 UICorner.CornerRadius = UDim.new(0, 20)
@@ -31,7 +30,7 @@ UICorner.CornerRadius = UDim.new(0, 20)
 -- Image Label setup
 ImageLabel.Parent = Frame
 ImageLabel.Size = UDim2.new(0, 50, 0, 50)
-ImageLabel.Position = UDim2.new(0, 5, 0, 5)
+ImageLabel.Position = UDim2.new(0, 0, 0, 0)
 ImageLabel.Image = "rbxassetid://13327193518" -- Replace with your AssetID
 ImageLabel.BackgroundTransparency = 1
 
@@ -148,16 +147,16 @@ local function collapseUI()
     tween:Play()
 end
 
+-- Initial expansion
+expandUI()
+
 -- Toggle Button Functionality
 ToggleButton.MouseButton1Click:Connect(function()
-    if Frame.Size == UDim2.new(0, 50, 0, 50) then
-        expandUI()
-    else
-        collapseUI()
+    if Frame.Size == UDim2.new(0, 750, 0, 700) then
+        TextBox.Visible = not TextBox.Visible
+        ExecuteButton.Visible = not ExecuteButton.Visible
+        ClearButton.Visible = not ClearButton.Visible
     end
-    TextBox.Visible = not TextBox.Visible
-    ExecuteButton.Visible = not ExecuteButton.Visible
-    ClearButton.Visible = not ClearButton.Visible
 end)
 
 -- Close Button Functionality
@@ -213,47 +212,4 @@ LogService.MessageOut:Connect(function(message, messageType)
         color = Color3.fromRGB(255, 0, 0) -- Red
     end
     appendToConsole("[" .. messageType.Name .. "] " .. message, color)
-end)
-
--- Override the print function
-local oldPrint = print
-print = function(...)
-    local args = {...}
-    local message = table.concat(args, " ")
-    appendToConsole(message, Color3.fromRGB(255, 255, 255)) -- Default color for print
-    oldPrint(...)
-end
-
--- Handle dragging
-local dragging, dragInput, dragStart, startPos
-
-local function update(input)
-    local delta = input.Position - dragStart
-    Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-end
-
-Frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        dragging = true
-        dragStart = input.Position
-        startPos = Frame.Position
-
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
-        end)
-    end
-end)
-
-Frame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement then
-        dragInput = input
-    end
-end)
-
-UserInputService.InputChanged:Connect(function(input)
-    if dragging and input == dragInput then
-        update(input)
-    end
 end)
