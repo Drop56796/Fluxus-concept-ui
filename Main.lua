@@ -1,5 +1,9 @@
 local CoreGui = game:GetService("CoreGui")
 local LogService = game:GetService("LogService")
+local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+
+-- Create UI components
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
@@ -10,6 +14,7 @@ local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local ConsoleToggle = Instance.new("TextButton")
 local ConsoleTextBox = Instance.new("TextBox")
+local CloseButton = Instance.new("TextButton")
 
 ScreenGui.Name = "FluxusAndroidUI"
 ScreenGui.Parent = CoreGui
@@ -114,11 +119,50 @@ local ConsoleTextBoxUICorner = Instance.new("UICorner")
 ConsoleTextBoxUICorner.CornerRadius = UDim.new(0, 10)
 ConsoleTextBoxUICorner.Parent = ConsoleTextBox
 
+-- Close Button setup
+CloseButton.Parent = Frame
+CloseButton.Size = UDim2.new(0, 30, 0, 30)
+CloseButton.Position = UDim2.new(1, -35, 0, 5)
+CloseButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+CloseButton.Text = "X"
+CloseButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CloseButton.Font = Enum.Font.SourceSans
+CloseButton.TextSize = 20
+
+local CloseUICorner = Instance.new("UICorner")
+CloseUICorner.CornerRadius = UDim.new(0, 15)
+CloseUICorner.Parent = CloseButton
+
+-- Functions to animate UI
+local function expandUI()
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local goal = {Size = UDim2.new(0, 750, 0, 700), Position = UDim2.new(0.5, -375, 0.5, -350)}
+    local tween = TweenService:Create(Frame, tweenInfo, goal)
+    tween:Play()
+end
+
+local function collapseUI()
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local goal = {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(1, -55, 0, 5)}
+    local tween = TweenService:Create(Frame, tweenInfo, goal)
+    tween:Play()
+end
+
 -- Toggle Button Functionality
 ToggleButton.MouseButton1Click:Connect(function()
+    if Frame.Size == UDim2.new(0, 50, 0, 50) then
+        expandUI()
+    else
+        collapseUI()
+    end
     TextBox.Visible = not TextBox.Visible
     ExecuteButton.Visible = not ExecuteButton.Visible
     ClearButton.Visible = not ClearButton.Visible
+end)
+
+-- Close Button Functionality
+CloseButton.MouseButton1Click:Connect(function()
+    collapseUI()
 end)
 
 -- Clear Button Functionality
@@ -129,7 +173,7 @@ end)
 -- Execute Button Functionality
 ExecuteButton.MouseButton1Click:Connect(function()
     local code = TextBox.Text
-    
+
     -- Custom action logic here
     print("Executing code:")
     print(code)
@@ -169,4 +213,47 @@ LogService.MessageOut:Connect(function(message, messageType)
         color = Color3.fromRGB(255, 0, 0) -- Red
     end
     appendToConsole("[" .. messageType.Name .. "] " .. message, color)
+end)
+
+-- Override the print function
+local oldPrint = print
+print = function(...)
+    local args = {...}
+    local message = table.concat(args, " ")
+    appendToConsole(message, Color3.fromRGB(255, 255, 255)) -- Default color for print
+    oldPrint(...)
+end
+
+-- Handle dragging
+local dragging, dragInput, dragStart, startPos
+
+local function update(input)
+    local delta = input.Position - dragStart
+    Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+Frame.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+Frame.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+UserInputService.InputChanged:Connect(function(input)
+    if dragging and input == dragInput then
+        update(input)
+    end
 end)
