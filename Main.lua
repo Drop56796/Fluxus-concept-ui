@@ -14,6 +14,8 @@ local ClearButton = Instance.new("TextButton")
 local ConsoleToggle = Instance.new("TextButton")
 local ConsoleTextBox = Instance.new("TextBox")
 local CloseButton = Instance.new("TextButton")
+local CreditsToggle = Instance.new("TextButton")
+local CreditsTextBox = Instance.new("TextBox")
 
 ScreenGui.Name = "FluxusAndroidUI"
 ScreenGui.Parent = CoreGui
@@ -132,7 +134,39 @@ local CloseUICorner = Instance.new("UICorner")
 CloseUICorner.CornerRadius = UDim.new(0, 15)
 CloseUICorner.Parent = CloseButton
 
--- Functions to animate UI
+-- Credits Toggle Button setup
+CreditsToggle.Parent = Frame
+CreditsToggle.Size = UDim2.new(0, 100, 0, 30)
+CreditsToggle.Position = UDim2.new(0, 5, 0, 150)
+CreditsToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+CreditsToggle.Text = "Credits"
+CreditsToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+CreditsToggle.Font = Enum.Font.SourceSans
+
+local CreditsToggleUICorner = Instance.new("UICorner")
+CreditsToggleUICorner.CornerRadius = UDim.new(0, 10)
+CreditsToggleUICorner.Parent = CreditsToggle
+
+-- Credits TextBox setup
+CreditsTextBox.Parent = Frame
+CreditsTextBox.Size = UDim2.new(1, -20, 0.4, -10)
+CreditsTextBox.Position = UDim2.new(0, 10, 0, 150)
+CreditsTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+CreditsTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+CreditsTextBox.Font = Enum.Font.Code
+CreditsTextBox.TextXAlignment = Enum.TextXAlignment.Left
+CreditsTextBox.TextYAlignment = Enum.TextYAlignment.Top
+CreditsTextBox.ClearTextOnFocus = false
+CreditsTextBox.TextEditable = false
+CreditsTextBox.TextWrapped = true
+CreditsTextBox.Text = "Credits:\n- Developer: [Fluxteam]\n- download link: [flux.li]"
+CreditsTextBox.Visible = false
+
+local CreditsTextBoxUICorner = Instance.new("UICorner")
+CreditsTextBoxUICorner.CornerRadius = UDim.new(0, 10)
+CreditsTextBoxUICorner.Parent = CreditsTextBox
+
+-- Function to animate UI
 local function expandUI()
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local goal = {Size = UDim2.new(0, 750, 0, 700), Position = UDim2.new(0.5, -375, 0.5, -350)}
@@ -141,27 +175,21 @@ local function expandUI()
 end
 
 local function collapseUI()
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.In)
     local goal = {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(1, -55, 0, 5)}
     local tween = TweenService:Create(Frame, tweenInfo, goal)
     tween:Play()
 end
 
--- Initial expansion
-expandUI()
+local isExpanded = false
 
 -- Toggle Button Functionality
 ToggleButton.MouseButton1Click:Connect(function()
-    if Frame.Size == UDim2.new(0, 750, 0, 700) then
+    if isExpanded then
         TextBox.Visible = not TextBox.Visible
         ExecuteButton.Visible = not ExecuteButton.Visible
         ClearButton.Visible = not ClearButton.Visible
     end
-end)
-
--- Close Button Functionality
-CloseButton.MouseButton1Click:Connect(function()
-    collapseUI()
 end)
 
 -- Clear Button Functionality
@@ -172,7 +200,7 @@ end)
 -- Execute Button Functionality
 ExecuteButton.MouseButton1Click:Connect(function()
     local code = TextBox.Text
-
+    
     -- Custom action logic here
     print("Executing code:")
     print(code)
@@ -192,6 +220,33 @@ end)
 -- Console Toggle Button Functionality
 ConsoleToggle.MouseButton1Click:Connect(function()
     ConsoleTextBox.Visible = not ConsoleTextBox.Visible
+end)
+
+-- Credits Toggle Button Functionality
+CreditsToggle.MouseButton1Click:Connect(function()
+    CreditsTextBox.Visible = not CreditsTextBox.Visible
+end)
+
+-- Close Button Functionality
+CloseButton.MouseButton1Click:Connect(function()
+    if isExpanded then
+        collapseUI()
+        isExpanded = false
+        ToggleButton.Visible = false
+        ConsoleToggle.Visible = false
+        CreditsToggle.Visible = false
+        TextBox.Visible = false
+        ExecuteButton.Visible = false
+        ClearButton.Visible = false
+        ConsoleTextBox.Visible = false
+        CreditsTextBox.Visible = false
+    else
+        expandUI()
+        isExpanded = true
+        ToggleButton.Visible = true
+        ConsoleToggle.Visible = true
+        CreditsToggle.Visible = true
+    end
 end)
 
 -- Append messages to the console
