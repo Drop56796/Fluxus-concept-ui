@@ -1,9 +1,6 @@
 -- Services
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
-local HttpService = game:GetService("HttpService")
-local RunService = game:GetService("RunService")
-
 -- Create UI components
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
@@ -325,54 +322,6 @@ ScrollButton.MouseButton1Click:Connect(function()
     else
         ConsoleTextBox.TextWrapped = true
     end
+end)        
+    -
     
-    -- Save settings to file
-    local scriptContent = TextBox.Text
-    local scriptName = "myScript"  -- Replace with the desired script name
-    local config = {
-        script_name = scriptName,
-        script = scriptContent
-    }
-    local configJson = HttpService:JSONEncode(config)
-    writefile("auto_execute.json", configJson)
-end)
-
--- Define auto execution logic
-local function saveAutoExecuteScript(scriptContent)
-    local config = {
-        script_name = "myScript",  -- Replace with the desired script name
-        script = scriptContent
-    }
-    local configJson = HttpService:JSONEncode(config)
-    writefile("auto_execute.json", configJson)
-end
-
-local function loadAutoExecuteScript()
-    if isfile("auto_execute.json") then
-        local configJson = readfile("auto_execute.json")
-        local config = HttpService:JSONDecode(configJson)
-        return config.script
-    end
-    return nil
-end
-
-local function executeAutoScript()
-    local scriptContent = loadAutoExecuteScript()
-    if scriptContent then
-        local success, result = pcall(function()
-            loadstring(scriptContent)()
-        end)
-        if success then
-            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nScript executed successfully."
-        else
-            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nFailed to execute script: " .. result
-        end
-    else
-        ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nNo script found to execute."
-    end
-end
-
--- Execute auto script on start
-RunService.Heartbeat:Connect(function()
-    executeAutoScript()
-end)
