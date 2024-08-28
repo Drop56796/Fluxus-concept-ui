@@ -274,7 +274,7 @@ ExecuteButton.MouseButton1Click:Connect(function()
         if success then
             ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nScript executed successfully."
         else
-            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nFailed to execute script: " .. result
+            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nError execute script please check u code"
         end
     end
 end)
@@ -322,6 +322,4 @@ ScrollButton.MouseButton1Click:Connect(function()
     else
         ConsoleTextBox.TextWrapped = true
     end
-end)        
-    -
-    
+end)
