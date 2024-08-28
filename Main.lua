@@ -5,9 +5,10 @@ local HttpService = game:GetService("HttpService")
 
 -- Create UI components
 local ScreenGui = Instance.new("ScreenGui")
-local Frame = Instance.new("Frame")
+local MainFrame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
 local ToggleButton = Instance.new("ImageButton")
+local ToggleFrame = Instance.new("Frame")
 local TextBox = Instance.new("TextBox")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
@@ -21,25 +22,32 @@ ScreenGui.Name = "FluxusAndroidUI"
 ScreenGui.Parent = CoreGui
 
 -- Main Frame setup
-Frame.Parent = ScreenGui
-Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Frame.Size = UDim2.new(0, 50, 0, 50)  -- Initial collapsed size
-Frame.Position = UDim2.new(0, 5, 0, 5)  -- Initial position
-Frame.Visible = true
+MainFrame.Parent = ScreenGui
+MainFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+MainFrame.Size = UDim2.new(0, 950, 0, 825)  -- Expanded size
+MainFrame.Position = UDim2.new(0.5, -475, 0.5, -412.5)  -- Centered position
+MainFrame.Visible = true
 
-UICorner.Parent = Frame
+UICorner.Parent = MainFrame
 UICorner.CornerRadius = UDim.new(0, 20)
 
 -- Toggle Button setup
-ToggleButton.Parent = Frame
+ToggleButton.Parent = MainFrame
 ToggleButton.Size = UDim2.new(0, 50, 0, 50)
-ToggleButton.Position = UDim2.new(0, 0, 0, 0)
+ToggleButton.Position = UDim2.new(0, 5, 0, 5)  -- Positioned at top-left
 ToggleButton.Image = "rbxassetid://13327193518"  -- Replace with your AssetID
 ToggleButton.BackgroundTransparency = 1
 
+-- Toggle Frame setup
+ToggleFrame.Parent = MainFrame
+ToggleFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+ToggleFrame.Size = UDim2.new(1, -55, 1, -10)
+ToggleFrame.Position = UDim2.new(0, 55, 0, 5)  -- Positioned to the right of ToggleButton
+ToggleFrame.Visible = true
+
 -- TextBox setup
-TextBox.Parent = Frame
-TextBox.Size = UDim2.new(1, -20, 0.7, -10)
+TextBox.Parent = ToggleFrame
+TextBox.Size = UDim2.new(1, -20, 0.6, -10)
 TextBox.Position = UDim2.new(0, 10, 0, 10)
 TextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -47,54 +55,50 @@ TextBox.Font = Enum.Font.Code
 TextBox.Text = "Enter code here..."
 TextBox.TextXAlignment = Enum.TextXAlignment.Left
 TextBox.TextYAlignment = Enum.TextYAlignment.Top
-TextBox.Visible = false
 TextBox.MultiLine = true  -- Allow multiline input
 
 -- Execute Button setup
-ExecuteButton.Parent = Frame
+ExecuteButton.Parent = ToggleFrame
 ExecuteButton.Size = UDim2.new(0, 100, 0, 30)
-ExecuteButton.Position = UDim2.new(0, 10, 0.8, -35)
+ExecuteButton.Position = UDim2.new(0, 10, 0.7, -35)
 ExecuteButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ExecuteButton.Text = "Execute"
 ExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ExecuteButton.Font = Enum.Font.SourceSans
-ExecuteButton.Visible = false
 
 local ExecuteUICorner = Instance.new("UICorner")
 ExecuteUICorner.CornerRadius = UDim.new(0, 10)
 ExecuteUICorner.Parent = ExecuteButton
 
 -- Clear Button setup
-ClearButton.Parent = Frame
+ClearButton.Parent = ToggleFrame
 ClearButton.Size = UDim2.new(0, 100, 0, 30)
-ClearButton.Position = UDim2.new(0, 120, 0.8, -35)
+ClearButton.Position = UDim2.new(0, 120, 0.7, -35)
 ClearButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ClearButton.Text = "Clear"
 ClearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 ClearButton.Font = Enum.Font.SourceSans
-ClearButton.Visible = false
 
 local ClearUICorner = Instance.new("UICorner")
 ClearUICorner.CornerRadius = UDim.new(0, 10)
 ClearUICorner.Parent = ClearButton
 
 -- Console Toggle Button setup
-ConsoleToggle.Parent = Frame
+ConsoleToggle.Parent = ToggleFrame
 ConsoleToggle.Size = UDim2.new(0, 100, 0, 30)
-ConsoleToggle.Position = UDim2.new(0, 10, 0.8, -70)
+ConsoleToggle.Position = UDim2.new(0, 10, 0.7, -70)
 ConsoleToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ConsoleToggle.Text = "Console"
 ConsoleToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 ConsoleToggle.Font = Enum.Font.SourceSans
-ConsoleToggle.Visible = false
 
 local ConsoleToggleUICorner = Instance.new("UICorner")
 ConsoleToggleUICorner.CornerRadius = UDim.new(0, 10)
 ConsoleToggleUICorner.Parent = ConsoleToggle
 
 -- Console TextBox setup
-ConsoleTextBox.Parent = Frame
-ConsoleTextBox.Size = UDim2.new(1, -20, 0.4, -10)
+ConsoleTextBox.Parent = ToggleFrame
+ConsoleTextBox.Size = UDim2.new(1, -20, 0.3, -10)
 ConsoleTextBox.Position = UDim2.new(0, 10, 0.4, 10)
 ConsoleTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 ConsoleTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -104,30 +108,29 @@ ConsoleTextBox.TextYAlignment = Enum.TextYAlignment.Top
 ConsoleTextBox.ClearTextOnFocus = false
 ConsoleTextBox.TextEditable = false
 ConsoleTextBox.TextWrapped = true
-ConsoleTextBox.Visible = false
 ConsoleTextBox.Text = "Console output will appear here..."
+ConsoleTextBox.Visible = false
 
 local ConsoleTextBoxUICorner = Instance.new("UICorner")
 ConsoleTextBoxUICorner.CornerRadius = UDim.new(0, 10)
 ConsoleTextBoxUICorner.Parent = ConsoleTextBox
 
 -- Credits Toggle Button setup
-CreditsToggle.Parent = Frame
+CreditsToggle.Parent = ToggleFrame
 CreditsToggle.Size = UDim2.new(0, 100, 0, 30)
-CreditsToggle.Position = UDim2.new(0, 10, 0.8, -105)
+CreditsToggle.Position = UDim2.new(0, 10, 0.7, -105)
 CreditsToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 CreditsToggle.Text = "Credits"
 CreditsToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
 CreditsToggle.Font = Enum.Font.SourceSans
-CreditsToggle.Visible = false
 
 local CreditsToggleUICorner = Instance.new("UICorner")
 CreditsToggleUICorner.CornerRadius = UDim.new(0, 10)
 CreditsToggleUICorner.Parent = CreditsToggle
 
 -- Credits TextBox setup
-CreditsTextBox.Parent = Frame
-CreditsTextBox.Size = UDim2.new(1, -20, 0.4, -10)
+CreditsTextBox.Parent = ToggleFrame
+CreditsTextBox.Size = UDim2.new(1, -20, 0.3, -10)
 CreditsTextBox.Position = UDim2.new(0, 10, 0.4, 10)
 CreditsTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
 CreditsTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -145,14 +148,13 @@ CreditsTextBoxUICorner.CornerRadius = UDim.new(0, 10)
 CreditsTextBoxUICorner.Parent = CreditsTextBox
 
 -- Save Button setup
-SaveButton.Parent = Frame
+SaveButton.Parent = ToggleFrame
 SaveButton.Size = UDim2.new(0, 100, 0, 30)
-SaveButton.Position = UDim2.new(0, 10, 0.8, -140)
+SaveButton.Position = UDim2.new(0, 10, 0.7, -140)
 SaveButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 SaveButton.Text = "Save"
 SaveButton.TextColor3 = Color3.fromRGB(255, 255, 255)
 SaveButton.Font = Enum.Font.SourceSans
-SaveButton.Visible = false
 
 local SaveUICorner = Instance.new("UICorner")
 SaveUICorner.CornerRadius = UDim.new(0, 10)
@@ -161,103 +163,66 @@ SaveUICorner.Parent = SaveButton
 -- Animation functions
 local function expandUI()
     local goalSize = UDim2.new(0, 950, 0, 825)
-    local goalPosition = UDim2.new(0, 5, 0, 5)  -- Center position
-    local tweenFrame = TweenService:Create(Frame, TweenInfo.new(0.5), {Size = goalSize, Position = goalPosition})
-    local tweenToggleButton = TweenService:Create(ToggleButton, TweenInfo.new(0.5), {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(0, 0, 0, 0)})
+    local tweenFrame = TweenService:Create(MainFrame, TweenInfo.new(0.5), {Size = goalSize})
+    local tweenToggleButton = TweenService:Create(ToggleButton, TweenInfo.new(0.5), {Position = UDim2.new(0, 5, 0, 5)})
 
     tweenFrame:Play()
     tweenToggleButton:Play()
 
     tweenFrame.Completed:Connect(function()
-        ToggleButton.Visible = true
-        TextBox.Visible = true
-        ExecuteButton.Visible = true
-        ClearButton.Visible = true
-        ConsoleToggle.Visible = true
-        CreditsToggle.Visible = true
-        SaveButton.Visible = true
+        ToggleButton.Visible = false
+        ToggleFrame.Visible = true
     end)
 end
 
 local function collapseUI()
     local goalSize = UDim2.new(0, 50, 0, 50)
-    local goalPosition = UDim2.new(0, 5, 0, 5)  -- Original position
-    local tweenFrame = TweenService:Create(Frame, TweenInfo.new(0.5), {Size = goalSize, Position = goalPosition})
-    local tweenToggleButton = TweenService:Create(ToggleButton, TweenInfo.new(0.5), {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(0, 0, 0, 0)})
+    local tweenFrame = TweenService:Create(MainFrame, TweenInfo.new(0.5), {Size = goalSize})
+    local tweenToggleButton = TweenService:Create(ToggleButton, TweenInfo.new(0.5), {Position = UDim2.new(0, 5, 0, 5)})
 
     tweenFrame:Play()
     tweenToggleButton:Play()
 
     tweenFrame.Completed:Connect(function()
         ToggleButton.Visible = true
-        TextBox.Visible = false
-        ExecuteButton.Visible = false
-        ClearButton.Visible = false
-        ConsoleToggle.Visible = false
-        CreditsToggle.Visible = false
-        SaveButton.Visible = false
+        ToggleFrame.Visible = false
     end)
 end
 
--- Toggle button functionality
+-- Toggle Button functionality
 ToggleButton.MouseButton1Click:Connect(function()
-    if Frame.Size == UDim2.new(0, 50, 0, 50) then
-        expandUI()
-    else
+    if ToggleFrame.Visible then
         collapseUI()
-    end
-end)
-
--- Execute button functionality
-ExecuteButton.MouseButton1Click:Connect(function()
-    local scriptContent = TextBox.Text
-    local success, result = pcall(function()
-        loadstring(scriptContent)()
-    end)
-    if not success then
-        ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nError: " .. result
     else
-        ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nSuccess"
+        expandUI()
     end
 end)
 
--- Clear button functionality
-ClearButton.MouseButton1Click:Connect(function()
-    TextBox.Text = ""
-end)
-
--- Console toggle functionality
+-- Console Toggle Button functionality
 ConsoleToggle.MouseButton1Click:Connect(function()
     ConsoleTextBox.Visible = not ConsoleTextBox.Visible
 end)
 
--- Credits toggle functionality
+-- Credits Toggle Button functionality
 CreditsToggle.MouseButton1Click:Connect(function()
     CreditsTextBox.Visible = not CreditsTextBox.Visible
 end)
 
--- Save button functionality
+-- Save Button functionality
 SaveButton.MouseButton1Click:Connect(function()
-    local scriptContent = TextBox.Text
-    local fileName = "script.json"
-    local scriptData = {
-        script_name = "script",
-        script = scriptContent
-    }
-    writefile(fileName, HttpService:JSONEncode(scriptData))
+    local code = TextBox.Text
+    local fileName = "script_save.txt"
+    writefile(fileName, HttpService:JSONEncode({script_name = "script", script = code}))
 end)
 
--- Load and execute script on start
-local function executeSavedScript()
-    local fileName = "script.json"
-    if isfile(fileName) then
-        local scriptData = HttpService:JSONDecode(readfile(fileName))
-        local scriptContent = scriptData.script
-        if scriptContent then
-            loadstring(scriptContent)()
-        end
-    end
-end
+-- Clear Button functionality
+ClearButton.MouseButton1Click:Connect(function()
+    TextBox.Text = ""
+end)
 
--- Execute saved script on script start
-executeSavedScript()
+-- Execute Button functionality
+ExecuteButton.MouseButton1Click:Connect(function()
+    local code = TextBox.Text
+    -- Replace this with actual execution code
+    ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nExecuting script:\n" .. code
+end)
