@@ -1,21 +1,27 @@
+-- Services
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
+local HttpService = game:GetService("HttpService")
+local RunService = game:GetService("RunService")
 
 -- Create UI components
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
 local ImageButton = Instance.new("ImageButton")
-local SettingsButton = Instance.new("TextButton")
-local SettingsFrame = Instance.new("Frame")
-local CodeEditedToggleButton = Instance.new("TextButton")
-local CodeEditedText = Instance.new("TextLabel")
+local ToggleButton = Instance.new("TextButton")
 local TextBox = Instance.new("TextBox")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local ConsoleToggle = Instance.new("TextButton")
 local ConsoleTextBox = Instance.new("TextBox")
 local CloseButton = Instance.new("TextButton")
+local CreditsToggle = Instance.new("TextButton")
+local CreditsTextBox = Instance.new("TextBox")
+local SettingsButton = Instance.new("TextButton")  -- Added Settings Button
+local ScrollToggle = Instance.new("TextButton")  -- Added Scroll Toggle Button
+local SettingsFrame = Instance.new("Frame")  -- Settings Frame
+local ScrollButton = Instance.new("TextButton")  -- Scroll Button
 
 ScreenGui.Name = "FluxusAndroidUI"
 ScreenGui.Parent = CoreGui
@@ -36,59 +42,24 @@ ImageButton.Position = UDim2.new(0, 0, 0, 0)
 ImageButton.Image = "rbxassetid://13327193518"  -- Replace with your AssetID
 ImageButton.BackgroundTransparency = 1
 
--- Settings Button setup
-SettingsButton.Parent = Frame
-SettingsButton.Size = UDim2.new(0, 50, 0, 50)
-SettingsButton.Position = UDim2.new(0, 50, 0, 0)
-SettingsButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-SettingsButton.Text = "⚙️" -- Icon for settings
-SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SettingsButton.Font = Enum.Font.SourceSans
-SettingsButton.Visible = false
+-- Toggle Button setup
+ToggleButton.Parent = Frame
+ToggleButton.Size = UDim2.new(0, 100, 0, 30)
+ToggleButton.Position = UDim2.new(0, 5, 0, 60)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ToggleButton.Text = "Code Edited"
+ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ToggleButton.Font = Enum.Font.SourceSans
+ToggleButton.Visible = false
 
-local SettingsUICorner = Instance.new("UICorner")
-SettingsUICorner.CornerRadius = UDim.new(0, 15)
-SettingsUICorner.Parent = SettingsButton
-
--- Settings Frame setup
-SettingsFrame.Parent = Frame
-SettingsFrame.Size = UDim2.new(0, 200, 0, 150)
-SettingsFrame.Position = UDim2.new(0, 105, 0, 60)
-SettingsFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-SettingsFrame.Visible = false
-
-local SettingsFrameUICorner = Instance.new("UICorner")
-SettingsFrameUICorner.CornerRadius = UDim.new(0, 10)
-SettingsFrameUICorner.Parent = SettingsFrame
-
--- Code Edited Toggle Button setup
-CodeEditedToggleButton.Parent = SettingsFrame
-CodeEditedToggleButton.Size = UDim2.new(0, 30, 0, 30)
-CodeEditedToggleButton.Position = UDim2.new(0, 10, 0, 10)
-CodeEditedToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-CodeEditedToggleButton.Text = "🔲"
-CodeEditedToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-CodeEditedToggleButton.Font = Enum.Font.SourceSans
-CodeEditedToggleButton.TextSize = 20
-
-local CodeEditedToggleUICorner = Instance.new("UICorner")
-CodeEditedToggleUICorner.CornerRadius = UDim.new(0, 5)
-CodeEditedToggleUICorner.Parent = CodeEditedToggleButton
-
--- Code Edited Text setup
-CodeEditedText.Parent = SettingsFrame
-CodeEditedText.Size = UDim2.new(0, 150, 0, 30)
-CodeEditedText.Position = UDim2.new(0, 50, 0, 10)
-CodeEditedText.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-CodeEditedText.Text = "Show Code Edited"
-CodeEditedText.TextColor3 = Color3.fromRGB(255, 255, 255)
-CodeEditedText.Font = Enum.Font.SourceSans
-CodeEditedText.TextSize = 20
+local ToggleUICorner = Instance.new("UICorner")
+ToggleUICorner.CornerRadius = UDim.new(0, 10)
+ToggleUICorner.Parent = ToggleButton
 
 -- TextBox setup
 TextBox.Parent = Frame
 TextBox.Size = UDim2.new(0, 600, 1, -10)
-TextBox.Position = UDim2.new(0, 160, 0, 5)
+TextBox.Position = UDim2.new(0, 110, 0, 5)
 TextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.Font = Enum.Font.Code
@@ -96,14 +67,12 @@ TextBox.Text = "Enter code here..."
 TextBox.TextXAlignment = Enum.TextXAlignment.Left
 TextBox.TextYAlignment = Enum.TextYAlignment.Top
 TextBox.Visible = false
-TextBox.MultiLine = true
-TextBox.TextWrapped = true
-TextBox.ClearTextOnFocus = false
+TextBox.MultiLine = true  -- Enable multiline input
 
 -- Execute Button setup
 ExecuteButton.Parent = Frame
 ExecuteButton.Size = UDim2.new(0, 100, 0, 30)
-ExecuteButton.Position = UDim2.new(0, 160, 1, -35)
+ExecuteButton.Position = UDim2.new(0, 110, 1, -35)
 ExecuteButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ExecuteButton.Text = "Execute"
 ExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -117,7 +86,7 @@ ExecuteUICorner.Parent = ExecuteButton
 -- Clear Button setup
 ClearButton.Parent = Frame
 ClearButton.Size = UDim2.new(0, 100, 0, 30)
-ClearButton.Position = UDim2.new(0, 270, 1, -35)
+ClearButton.Position = UDim2.new(0, 220, 1, -35)
 ClearButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ClearButton.Text = "Clear"
 ClearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -176,109 +145,234 @@ local CloseUICorner = Instance.new("UICorner")
 CloseUICorner.CornerRadius = UDim.new(0, 15)
 CloseUICorner.Parent = CloseButton
 
--- Function to animate UI
-local function expandUI()
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    local goal = {Size = UDim2.new(0, 750, 0, 700), Position = UDim2.new(0.5, -375, 0.5, -350)}
-    local tween = TweenService:Create(Frame, tweenInfo, goal)
-    tween:Play()
+-- Credits Toggle Button setup
+CreditsToggle.Parent = Frame
+CreditsToggle.Size = UDim2.new(0, 100, 0, 30)
+CreditsToggle.Position = UDim2.new(0, 5, 0, 150)
+CreditsToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+CreditsToggle.Text = "Credits"
+CreditsToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+CreditsToggle.Font = Enum.Font.SourceSans
+CreditsToggle.Visible = false
 
-    -- Show other UI elements
-    tween.Completed:Connect(function()
-        ImageButton.Visible = true
+local CreditsToggleUICorner = Instance.new("UICorner")
+CreditsToggleUICorner.CornerRadius = UDim.new(0, 10)
+CreditsToggleUICorner.Parent = CreditsToggle
+
+-- Credits TextBox setup
+CreditsTextBox.Parent = Frame
+CreditsTextBox.Size = UDim2.new(1, -20, 0.4, -10)
+CreditsTextBox.Position = UDim2.new(0, 10, 0, 150)
+CreditsTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+CreditsTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+CreditsTextBox.Font = Enum.Font.Code
+CreditsTextBox.TextXAlignment = Enum.TextXAlignment.Left
+CreditsTextBox.TextYAlignment = Enum.TextYAlignment.Top
+CreditsTextBox.ClearTextOnFocus = false
+CreditsTextBox.TextEditable = false
+CreditsTextBox.TextWrapped = true
+CreditsTextBox.Text = "Credits:\n- Dev: [Drop56796]\n hi user welcome use or back :D"
+CreditsTextBox.Visible = false
+
+local CreditsTextBoxUICorner = Instance.new("UICorner")
+CreditsTextBoxUICorner.CornerRadius = UDim.new(0, 10)
+CreditsTextBoxUICorner.Parent = CreditsTextBox
+
+-- Settings Button setup
+SettingsButton.Parent = Frame
+SettingsButton.Size = UDim2.new(0, 100, 0, 30)
+SettingsButton.Position = UDim2.new(0, 5, 0, 250)
+SettingsButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+SettingsButton.Text = "Settings"
+SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SettingsButton.Font = Enum.Font.SourceSans
+SettingsButton.Visible = true
+
+local SettingsUICorner = Instance.new("UICorner")
+SettingsUICorner.CornerRadius = UDim.new(0, 10)
+SettingsUICorner.Parent = SettingsButton
+
+-- Scroll Toggle Button setup
+ScrollToggle.Parent = Frame
+ScrollToggle.Size = UDim2.new(0, 100, 0, 30)
+ScrollToggle.Position = UDim2.new(0, 5, 0, 290)
+ScrollToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ScrollToggle.Text = "Toggle Scroll"
+ScrollToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+ScrollToggle.Font = Enum.Font.SourceSans
+ScrollToggle.Visible = true
+
+local ScrollToggleUICorner = Instance.new("UICorner")
+ScrollToggleUICorner.CornerRadius = UDim.new(0, 10)
+ScrollToggleUICorner.Parent = ScrollToggle
+
+-- Settings Frame setup
+SettingsFrame.Parent = Frame
+SettingsFrame.Size = UDim2.new(0, 200, 0, 200)
+SettingsFrame.Position = UDim2.new(0, 110, 0, 50)
+SettingsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+SettingsFrame.Visible = false
+
+-- Scroll Button setup in Settings
+ScrollButton.Parent = SettingsFrame
+ScrollButton.Size = UDim2.new(0, 100, 0, 30)
+ScrollButton.Position = UDim2.new(0, 50, 0, 50)
+ScrollButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+ScrollButton.Text = "Toggle Scroll"
+ScrollButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+ScrollButton.Font = Enum.Font.SourceSans
+
+local ScrollButtonUICorner = Instance.new("UICorner")
+ScrollButtonUICorner.CornerRadius = UDim.new(0, 10)
+ScrollButtonUICorner.Parent = ScrollButton
+
+-- Define animations
+local function expandUI()
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+    local tween = TweenService:Create(Frame, tweenInfo, {Size = UDim2.new(0, 800, 0, 600)})
+    tween:Play()
+end
+
+local function collapseUI()
+    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
+    local tween = TweenService:Create(Frame, tweenInfo, {Size = UDim2.new(0, 50, 0, 50)})
+    tween:Play()
+end
+
+-- UI control logic
+ImageButton.MouseButton1Click:Connect(function()
+    if Frame.Size == UDim2.new(0, 50, 0, 50) then
+        expandUI()
+        ToggleButton.Visible = true
         TextBox.Visible = true
         ExecuteButton.Visible = true
         ClearButton.Visible = true
         ConsoleToggle.Visible = true
-        ConsoleTextBox.Visible = true
-        CloseButton.Visible = true
+        CreditsToggle.Visible = true
         SettingsButton.Visible = true
-    end)
-end
-
-local function collapseUI()
-    -- Collapse to original size
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    local goal = {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(1, -55, 0, 5)}
-    local tween = TweenService:Create(Frame, tweenInfo, goal)
-    tween:Play()
-
-    -- Hide other UI elements
-    tween.Completed:Connect(function()
-        ImageButton.Visible = true
+        ScrollToggle.Visible = true
+        CloseButton.Visible = true
+    else
+        collapseUI()
+        ToggleButton.Visible = false
         TextBox.Visible = false
         ExecuteButton.Visible = false
         ClearButton.Visible = false
         ConsoleToggle.Visible = false
-        ConsoleTextBox.Visible = false
-        CloseButton.Visible = false
+        CreditsToggle.Visible = false
         SettingsButton.Visible = false
+        ScrollToggle.Visible = false
+        CloseButton.Visible = false
         SettingsFrame.Visible = false
-    end)
-end
-
--- Toggle Settings Frame visibility
-local function toggleSettingsFrame()
-    SettingsFrame.Visible = not SettingsFrame.Visible
-end
-
--- Toggle Code Edited TextBox visibility
-local function toggleCodeEdited()
-    TextBox.Visible = not TextBox.Visible
-end
-
--- Toggle Console TextBox visibility
-local function toggleConsole()
-    ConsoleTextBox.Visible = not ConsoleTextBox.Visible
-end
-
--- Infinite scrolling effect for ConsoleTextBox
-local function setupInfiniteScrolling()
-    local scrollSpeed = 20  -- Adjust scroll speed as needed
-    local function scroll()
-        while true do
-            wait(0.05)  -- Delay between scrolls
-            ConsoleTextBox.CanvasPosition = Vector2.new(0, ConsoleTextBox.CanvasPosition.Y + scrollSpeed)
-            if ConsoleTextBox.CanvasPosition.Y >= ConsoleTextBox.CanvasSize.Y.Offset then
-                ConsoleTextBox.CanvasPosition = Vector2.new(0, 0)
-            end
-        end
-    end
-    spawn(scroll)
-end
-
-setupInfiniteScrolling()
-
--- Connect functions to buttons
-ImageButton.MouseButton1Click:Connect(expandUI)
-CloseButton.MouseButton1Click:Connect(collapseUI)
-SettingsButton.MouseButton1Click:Connect(toggleSettingsFrame)
-CodeEditedToggleButton.MouseButton1Click:Connect(toggleCodeEdited)
-ConsoleToggle.MouseButton1Click:Connect(toggleConsole)
-
--- Code Execution
-local function printToConsole(text)
-    ConsoleTextBox.Text = ConsoleTextBox.Text .. "\n" .. text
-end
-
-ExecuteButton.MouseButton1Click:Connect(function()
-    local code = TextBox.Text
-    local success, result = pcall(function()
-        return loadstring(code)()
-    end)
-    if success then
-        printToConsole("Executed: " .. code)
-        if result then
-            printToConsole("Result: " .. tostring(result))
-        end
-    else
-        printToConsole("Error: " .. tostring(result))
     end
 end)
 
+-- Execute Button logic
+ExecuteButton.MouseButton1Click:Connect(function()
+    local code = TextBox.Text
+    if code and code ~= "" then
+        local success, result = pcall(function()
+            loadstring(code)()
+        end)
+        if success then
+            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nScript executed successfully."
+        else
+            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nFailed to execute script: " .. result
+        end
+    end
+end)
+
+-- Clear Button logic
 ClearButton.MouseButton1Click:Connect(function()
     TextBox.Text = ""
 end)
 
--- Automatically expand UI on script run
-expandUI()
+-- Close Button logic
+CloseButton.MouseButton1Click:Connect(function()
+    Frame.Visible = false
+end)
+
+-- Credits Toggle Button logic
+CreditsToggle.MouseButton1Click:Connect(function()
+    CreditsTextBox.Visible = not CreditsTextBox.Visible
+end)
+
+-- Console Toggle Button logic
+ConsoleToggle.MouseButton1Click:Connect(function()
+    ConsoleTextBox.Visible = not ConsoleTextBox.Visible
+end)
+
+-- Scroll Toggle Button logic
+ScrollToggle.MouseButton1Click:Connect(function()
+    -- Implement scroll behavior here
+    if ConsoleTextBox.TextWrapped then
+        ConsoleTextBox.TextWrapped = false
+    else
+        ConsoleTextBox.TextWrapped = true
+    end
+end)
+
+-- Settings Button logic
+SettingsButton.MouseButton1Click:Connect(function()
+    SettingsFrame.Visible = not SettingsFrame.Visible
+end)
+
+-- Scroll Button logic in Settings Frame
+ScrollButton.MouseButton1Click:Connect(function()
+    -- Toggle Scroll setting
+    if ConsoleTextBox.TextWrapped then
+        ConsoleTextBox.TextWrapped = false
+    else
+        ConsoleTextBox.TextWrapped = true
+    end
+    
+    -- Save settings to file
+    local scriptContent = TextBox.Text
+    local scriptName = "myScript"  -- Replace with the desired script name
+    local config = {
+        script_name = scriptName,
+        script = scriptContent
+    }
+    local configJson = HttpService:JSONEncode(config)
+    writefile("auto_execute.json", configJson)
+end)
+
+-- Define auto execution logic
+local function saveAutoExecuteScript(scriptContent)
+    local config = {
+        script_name = "myScript",  -- Replace with the desired script name
+        script = scriptContent
+    }
+    local configJson = HttpService:JSONEncode(config)
+    writefile("auto_execute.json", configJson)
+end
+
+local function loadAutoExecuteScript()
+    if isfile("auto_execute.json") then
+        local configJson = readfile("auto_execute.json")
+        local config = HttpService:JSONDecode(configJson)
+        return config.script
+    end
+    return nil
+end
+
+local function executeAutoScript()
+    local scriptContent = loadAutoExecuteScript()
+    if scriptContent then
+        local success, result = pcall(function()
+            loadstring(scriptContent)()
+        end)
+        if success then
+            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nScript executed successfully."
+        else
+            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nFailed to execute script: " .. result
+        end
+    else
+        ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nNo script found to execute."
+    end
+end
+
+-- Execute auto script on start
+RunService.Heartbeat:Connect(function()
+    executeAutoScript()
+end)
