@@ -274,7 +274,7 @@ ExecuteButton.MouseButton1Click:Connect(function()
         if success then
             ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nScript executed successfully."
         else
-            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nError execute script please check u code"
+            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nError execute script please check u code(" .. result")
         end
     end
 end)
