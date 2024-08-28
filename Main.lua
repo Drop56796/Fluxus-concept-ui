@@ -185,7 +185,7 @@ local function expandUI()
 
     -- Show other UI elements
     tween.Completed:Connect(function()
-        ImageButton.Visible = false
+        ImageButton.Visible = true
         TextBox.Visible = true
         ExecuteButton.Visible = true
         ClearButton.Visible = true
