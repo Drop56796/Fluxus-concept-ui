@@ -1,21 +1,21 @@
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
-local RunService = game:GetService("RunService")
 
 -- Create UI components
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
 local UICorner = Instance.new("UICorner")
 local ImageButton = Instance.new("ImageButton")
-local ToggleButton = Instance.new("TextButton")
+local SettingsButton = Instance.new("TextButton")
+local SettingsFrame = Instance.new("Frame")
+local CodeEditedToggleButton = Instance.new("TextButton")
+local CodeEditedText = Instance.new("TextLabel")
 local TextBox = Instance.new("TextBox")
 local ExecuteButton = Instance.new("TextButton")
 local ClearButton = Instance.new("TextButton")
 local ConsoleToggle = Instance.new("TextButton")
 local ConsoleTextBox = Instance.new("TextBox")
 local CloseButton = Instance.new("TextButton")
-local CreditsToggle = Instance.new("TextButton")
-local CreditsTextBox = Instance.new("TextBox")
 
 ScreenGui.Name = "FluxusAndroidUI"
 ScreenGui.Parent = CoreGui
@@ -36,24 +36,59 @@ ImageButton.Position = UDim2.new(0, 0, 0, 0)
 ImageButton.Image = "rbxassetid://13327193518"  -- Replace with your AssetID
 ImageButton.BackgroundTransparency = 1
 
--- Toggle Button setup
-ToggleButton.Parent = Frame
-ToggleButton.Size = UDim2.new(0, 100, 0, 30)
-ToggleButton.Position = UDim2.new(0, 5, 0, 60)
-ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ToggleButton.Text = "Code Edited"
-ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ToggleButton.Font = Enum.Font.SourceSans
-ToggleButton.Visible = false
+-- Settings Button setup
+SettingsButton.Parent = Frame
+SettingsButton.Size = UDim2.new(0, 50, 0, 50)
+SettingsButton.Position = UDim2.new(0, 50, 0, 0)
+SettingsButton.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+SettingsButton.Text = "⚙️" -- Icon for settings
+SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SettingsButton.Font = Enum.Font.SourceSans
+SettingsButton.Visible = false
 
-local ToggleUICorner = Instance.new("UICorner")
-ToggleUICorner.CornerRadius = UDim.new(0, 10)
-ToggleUICorner.Parent = ToggleButton
+local SettingsUICorner = Instance.new("UICorner")
+SettingsUICorner.CornerRadius = UDim.new(0, 15)
+SettingsUICorner.Parent = SettingsButton
+
+-- Settings Frame setup
+SettingsFrame.Parent = Frame
+SettingsFrame.Size = UDim2.new(0, 200, 0, 150)
+SettingsFrame.Position = UDim2.new(0, 105, 0, 60)
+SettingsFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+SettingsFrame.Visible = false
+
+local SettingsFrameUICorner = Instance.new("UICorner")
+SettingsFrameUICorner.CornerRadius = UDim.new(0, 10)
+SettingsFrameUICorner.Parent = SettingsFrame
+
+-- Code Edited Toggle Button setup
+CodeEditedToggleButton.Parent = SettingsFrame
+CodeEditedToggleButton.Size = UDim2.new(0, 30, 0, 30)
+CodeEditedToggleButton.Position = UDim2.new(0, 10, 0, 10)
+CodeEditedToggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+CodeEditedToggleButton.Text = "🔲"
+CodeEditedToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+CodeEditedToggleButton.Font = Enum.Font.SourceSans
+CodeEditedToggleButton.TextSize = 20
+
+local CodeEditedToggleUICorner = Instance.new("UICorner")
+CodeEditedToggleUICorner.CornerRadius = UDim.new(0, 5)
+CodeEditedToggleUICorner.Parent = CodeEditedToggleButton
+
+-- Code Edited Text setup
+CodeEditedText.Parent = SettingsFrame
+CodeEditedText.Size = UDim2.new(0, 150, 0, 30)
+CodeEditedText.Position = UDim2.new(0, 50, 0, 10)
+CodeEditedText.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+CodeEditedText.Text = "Show Code Edited"
+CodeEditedText.TextColor3 = Color3.fromRGB(255, 255, 255)
+CodeEditedText.Font = Enum.Font.SourceSans
+CodeEditedText.TextSize = 20
 
 -- TextBox setup
 TextBox.Parent = Frame
 TextBox.Size = UDim2.new(0, 600, 1, -10)
-TextBox.Position = UDim2.new(0, 110, 0, 5)
+TextBox.Position = UDim2.new(0, 160, 0, 5)
 TextBox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
 TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 TextBox.Font = Enum.Font.Code
@@ -61,12 +96,14 @@ TextBox.Text = "Enter code here..."
 TextBox.TextXAlignment = Enum.TextXAlignment.Left
 TextBox.TextYAlignment = Enum.TextYAlignment.Top
 TextBox.Visible = false
-TextBox.MultiLine = true  -- 允许多行输入
+TextBox.MultiLine = true
+TextBox.TextWrapped = true
+TextBox.ClearTextOnFocus = false
 
 -- Execute Button setup
 ExecuteButton.Parent = Frame
 ExecuteButton.Size = UDim2.new(0, 100, 0, 30)
-ExecuteButton.Position = UDim2.new(0, 110, 1, -35)
+ExecuteButton.Position = UDim2.new(0, 160, 1, -35)
 ExecuteButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ExecuteButton.Text = "Execute"
 ExecuteButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -80,7 +117,7 @@ ExecuteUICorner.Parent = ExecuteButton
 -- Clear Button setup
 ClearButton.Parent = Frame
 ClearButton.Size = UDim2.new(0, 100, 0, 30)
-ClearButton.Position = UDim2.new(0, 220, 1, -35)
+ClearButton.Position = UDim2.new(0, 270, 1, -35)
 ClearButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
 ClearButton.Text = "Clear"
 ClearButton.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -139,39 +176,6 @@ local CloseUICorner = Instance.new("UICorner")
 CloseUICorner.CornerRadius = UDim.new(0, 15)
 CloseUICorner.Parent = CloseButton
 
--- Credits Toggle Button setup
-CreditsToggle.Parent = Frame
-CreditsToggle.Size = UDim2.new(0, 100, 0, 30)
-CreditsToggle.Position = UDim2.new(0, 5, 0, 150)
-CreditsToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-CreditsToggle.Text = "Credits"
-CreditsToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-CreditsToggle.Font = Enum.Font.SourceSans
-CreditsToggle.Visible = false
-
-local CreditsToggleUICorner = Instance.new("UICorner")
-CreditsToggleUICorner.CornerRadius = UDim.new(0, 10)
-CreditsToggleUICorner.Parent = CreditsToggle
-
--- Credits TextBox setup
-CreditsTextBox.Parent = Frame
-CreditsTextBox.Size = UDim2.new(1, -20, 0.4, -10)
-CreditsTextBox.Position = UDim2.new(0, 10, 0, 150)
-CreditsTextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-CreditsTextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-CreditsTextBox.Font = Enum.Font.Code
-CreditsTextBox.TextXAlignment = Enum.TextXAlignment.Left
-CreditsTextBox.TextYAlignment = Enum.TextYAlignment.Top
-CreditsTextBox.ClearTextOnFocus = false
-CreditsTextBox.TextEditable = false
-CreditsTextBox.TextWrapped = true
-CreditsTextBox.Text = "Credits:\n- Dev: [Drop56796]\n hi user welcome use or back :D"
-CreditsTextBox.Visible = false
-
-local CreditsTextBoxUICorner = Instance.new("UICorner")
-CreditsTextBoxUICorner.CornerRadius = UDim.new(0, 10)
-CreditsTextBoxUICorner.Parent = CreditsTextBox
-
 -- Function to animate UI
 local function expandUI()
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
@@ -179,59 +183,80 @@ local function expandUI()
     local tween = TweenService:Create(Frame, tweenInfo, goal)
     tween:Play()
 
-    -- 显示其他 UI 元素
+    -- Show other UI elements
     tween.Completed:Connect(function()
-        ToggleButton.Visible = true
+        ImageButton.Visible = false
         TextBox.Visible = true
         ExecuteButton.Visible = true
         ClearButton.Visible = true
         ConsoleToggle.Visible = true
         ConsoleTextBox.Visible = true
         CloseButton.Visible = true
-        CreditsToggle.Visible = true
-        CreditsTextBox.Visible = true
+        SettingsButton.Visible = true
     end)
 end
 
 local function collapseUI()
-    -- 缩回到原来的尺寸
+    -- Collapse to original size
     local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
     local goal = {Size = UDim2.new(0, 50, 0, 50), Position = UDim2.new(1, -55, 0, 5)}
     local tween = TweenService:Create(Frame, tweenInfo, goal)
     tween:Play()
 
-    -- 隐藏其他 UI 元素
+    -- Hide other UI elements
     tween.Completed:Connect(function()
-        ToggleButton.Visible = false
+        ImageButton.Visible = true
         TextBox.Visible = false
         ExecuteButton.Visible = false
         ClearButton.Visible = false
         ConsoleToggle.Visible = false
         ConsoleTextBox.Visible = false
         CloseButton.Visible = false
-        CreditsToggle.Visible = false
-        CreditsTextBox.Visible = false
+        SettingsButton.Visible = false
+        SettingsFrame.Visible = false
     end)
 end
 
--- 绑定按钮点击事件
-ImageButton.MouseButton1Click:Connect(function()
-    if Frame.Size.X.Offset == 50 then
-        expandUI()
-    else
-        collapseUI()
+-- Toggle Settings Frame visibility
+local function toggleSettingsFrame()
+    SettingsFrame.Visible = not SettingsFrame.Visible
+end
+
+-- Toggle Code Edited TextBox visibility
+local function toggleCodeEdited()
+    TextBox.Visible = not TextBox.Visible
+end
+
+-- Toggle Console TextBox visibility
+local function toggleConsole()
+    ConsoleTextBox.Visible = not ConsoleTextBox.Visible
+end
+
+-- Infinite scrolling effect for ConsoleTextBox
+local function setupInfiniteScrolling()
+    local scrollSpeed = 20  -- Adjust scroll speed as needed
+    local function scroll()
+        while true do
+            wait(0.05)  -- Delay between scrolls
+            ConsoleTextBox.CanvasPosition = Vector2.new(0, ConsoleTextBox.CanvasPosition.Y + scrollSpeed)
+            if ConsoleTextBox.CanvasPosition.Y >= ConsoleTextBox.CanvasSize.Y.Offset then
+                ConsoleTextBox.CanvasPosition = Vector2.new(0, 0)
+            end
+        end
     end
-end)
+    spawn(scroll)
+end
 
--- 关闭按钮事件
-CloseButton.MouseButton1Click:Connect(function()
-    collapseUI()  -- 缩小UI而不是关闭
-end)
+setupInfiniteScrolling()
 
--- 显示界面时自动展开
-expandUI()
+-- Connect functions to buttons
+ImageButton.MouseButton1Click:Connect(expandUI)
+CloseButton.MouseButton1Click:Connect(collapseUI)
+SettingsButton.MouseButton1Click:Connect(toggleSettingsFrame)
+CodeEditedToggleButton.MouseButton1Click:Connect(toggleCodeEdited)
+ConsoleToggle.MouseButton1Click:Connect(toggleConsole)
 
--- 控制台功能
+-- Code Execution
 local function printToConsole(text)
     ConsoleTextBox.Text = ConsoleTextBox.Text .. "\n" .. text
 end
@@ -255,10 +280,5 @@ ClearButton.MouseButton1Click:Connect(function()
     TextBox.Text = ""
 end)
 
-ConsoleToggle.MouseButton1Click:Connect(function()
-    ConsoleTextBox.Visible = not ConsoleTextBox.Visible
-end)
-
-CreditsToggle.MouseButton1Click:Connect(function()
-    CreditsTextBox.Visible = not CreditsTextBox.Visible
-end)
+-- Automatically expand UI on script run
+expandUI()
