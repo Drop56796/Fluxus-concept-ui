@@ -43,7 +43,7 @@ ToggleFrame.Parent = MainFrame
 ToggleFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 ToggleFrame.Size = UDim2.new(1, -55, 1, -10)
 ToggleFrame.Position = UDim2.new(0, 55, 0, 5)  -- Positioned to the right of ToggleButton
-ToggleFrame.Visible = true
+ToggleFrame.Visible = false
 
 -- TextBox setup
 TextBox.Parent = ToggleFrame
