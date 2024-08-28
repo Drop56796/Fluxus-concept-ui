@@ -30,7 +30,7 @@ ScreenGui.Parent = CoreGui
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
 Frame.Size = UDim2.new(0, 50, 0, 50)  -- Initial collapsed size
-Frame.Position = UDim2.new(1, -55, 0, 5)
+Frame.Position = UDim2.new(1, 55, 0, 5)
 
 UICorner.Parent = Frame
 UICorner.CornerRadius = UDim.new(0, 20)
