@@ -194,12 +194,34 @@ local function expandUI()
     local goalSize = UDim2.new(0, 600, 0, 500)  -- Expanded size
     local tween = TweenService:Create(Frame, TweenInfo.new(0.5), {Size = goalSize})
     tween:Play()
+    
+    tween.Completed:Connect(function()
+        ToggleButton.Visible = true
+        TextBox.Visible = true
+        ExecuteButton.Visible = true
+        ClearButton.Visible = true
+        ConsoleToggle.Visible = true
+        CreditsToggle.Visible = true
+        SaveButton.Visible = true
+        CloseButton.Visible = true
+    end)
 end
 
 local function collapseUI()
     local goalSize = UDim2.new(0, 50, 0, 50)  -- Collapsed size
     local tween = TweenService:Create(Frame, TweenInfo.new(0.5), {Size = goalSize})
     tween:Play()
+    
+    tween.Completed:Connect(function()
+        ToggleButton.Visible = false
+        TextBox.Visible = false
+        ExecuteButton.Visible = false
+        ClearButton.Visible = false
+        ConsoleToggle.Visible = false
+        CreditsToggle.Visible = false
+        SaveButton.Visible = false
+        CloseButton.Visible = false
+    end)
 end
 
 local function toggleUI()
