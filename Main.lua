@@ -1,6 +1,9 @@
 -- Services
 local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
+local HttpService = game:GetService("HttpService")
+
 -- Create UI components
 local ScreenGui = Instance.new("ScreenGui")
 local Frame = Instance.new("Frame")
@@ -15,10 +18,7 @@ local ConsoleTextBox = Instance.new("TextBox")
 local CloseButton = Instance.new("TextButton")
 local CreditsToggle = Instance.new("TextButton")
 local CreditsTextBox = Instance.new("TextBox")
-local SettingsButton = Instance.new("TextButton")  -- Added Settings Button
-local ScrollToggle = Instance.new("TextButton")  -- Added Scroll Toggle Button
-local SettingsFrame = Instance.new("Frame")  -- Settings Frame
-local ScrollButton = Instance.new("TextButton")  -- Scroll Button
+local SaveButton = Instance.new("TextButton")  -- 新增的保存按钮
 
 ScreenGui.Name = "FluxusAndroidUI"
 ScreenGui.Parent = CoreGui
@@ -26,9 +26,9 @@ ScreenGui.Parent = CoreGui
 -- Main Frame setup
 Frame.Parent = ScreenGui
 Frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-Frame.Size = UDim2.new(0, 50, 0, 50)  -- Initial expanded size
+Frame.Size = UDim2.new(0, 50, 0, 50)  -- Initial collapsed size
 Frame.Position = UDim2.new(0, 5, 0, 5)
--- Position in the top-left corner
+
 UICorner.Parent = Frame
 UICorner.CornerRadius = UDim.new(0, 20)
 
@@ -64,7 +64,7 @@ TextBox.Text = "Enter code here..."
 TextBox.TextXAlignment = Enum.TextXAlignment.Left
 TextBox.TextYAlignment = Enum.TextYAlignment.Top
 TextBox.Visible = false
-TextBox.MultiLine = true  -- Enable multiline input
+TextBox.MultiLine = true  -- 允许多行输入
 
 -- Execute Button setup
 ExecuteButton.Parent = Frame
@@ -175,151 +175,137 @@ local CreditsTextBoxUICorner = Instance.new("UICorner")
 CreditsTextBoxUICorner.CornerRadius = UDim.new(0, 10)
 CreditsTextBoxUICorner.Parent = CreditsTextBox
 
--- Settings Button setup
-SettingsButton.Parent = Frame
-SettingsButton.Size = UDim2.new(0, 100, 0, 30)
-SettingsButton.Position = UDim2.new(0, 5, 0, 250)
-SettingsButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-SettingsButton.Text = "Settings"
-SettingsButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SettingsButton.Font = Enum.Font.SourceSans
-SettingsButton.Visible = true
+-- 保存按钮设置
+SaveButton.Parent = Frame
+SaveButton.Size = UDim2.new(0, 100, 0, 30)
+SaveButton.Position = UDim2.new(0, 330, 1, -35)
+SaveButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+SaveButton.Text = "Save"
+SaveButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SaveButton.Font = Enum.Font.SourceSans
+SaveButton.Visible = false
 
-local SettingsUICorner = Instance.new("UICorner")
-SettingsUICorner.CornerRadius = UDim.new(0, 10)
-SettingsUICorner.Parent = SettingsButton
+local SaveUICorner = Instance.new("UICorner")
+SaveUICorner.CornerRadius = UDim.new(0, 10)
+SaveUICorner.Parent = SaveButton
 
--- Scroll Toggle Button setup
-ScrollToggle.Parent = Frame
-ScrollToggle.Size = UDim2.new(0, 100, 0, 30)
-ScrollToggle.Position = UDim2.new(0, 5, 0, 290)
-ScrollToggle.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ScrollToggle.Text = "Toggle Scroll"
-ScrollToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
-ScrollToggle.Font = Enum.Font.SourceSans
-ScrollToggle.Visible = true
-
-local ScrollToggleUICorner = Instance.new("UICorner")
-ScrollToggleUICorner.CornerRadius = UDim.new(0, 10)
-ScrollToggleUICorner.Parent = ScrollToggle
-
--- Settings Frame setup
-SettingsFrame.Parent = Frame
-SettingsFrame.Size = UDim2.new(0, 200, 0, 200)
-SettingsFrame.Position = UDim2.new(0, 110, 0, 50)
-SettingsFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-SettingsFrame.Visible = false
-
--- Scroll Button setup in Settings
-ScrollButton.Parent = SettingsFrame
-ScrollButton.Size = UDim2.new(0, 100, 0, 30)
-ScrollButton.Position = UDim2.new(0, 50, 0, 50)
-ScrollButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-ScrollButton.Text = "Toggle Scroll"
-ScrollButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-ScrollButton.Font = Enum.Font.SourceSans
-
-local ScrollButtonUICorner = Instance.new("UICorner")
-ScrollButtonUICorner.CornerRadius = UDim.new(0, 10)
-ScrollButtonUICorner.Parent = ScrollButton
-
--- Define animations
+-- Functions for UI
 local function expandUI()
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
-    local tween = TweenService:Create(Frame, tweenInfo, {Size = UDim2.new(0, 800, 0, 600)})
+    local goalSize = UDim2.new(0, 600, 0, 500)  -- Expanded size
+    local tween = TweenService:Create(Frame, TweenInfo.new(0.5), {Size = goalSize})
     tween:Play()
 end
 
 local function collapseUI()
-    local tweenInfo = TweenInfo.new(0.5, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut)
-    local tween = TweenService:Create(Frame, tweenInfo, {Size = UDim2.new(0, 50, 0, 50)})
+    local goalSize = UDim2.new(0, 50, 0, 50)  -- Collapsed size
+    local tween = TweenService:Create(Frame, TweenInfo.new(0.5), {Size = goalSize})
     tween:Play()
 end
 
--- UI control logic
-ImageButton.MouseButton1Click:Connect(function()
+local function toggleUI()
     if Frame.Size == UDim2.new(0, 50, 0, 50) then
         expandUI()
-        ToggleButton.Visible = true
-        TextBox.Visible = true
-        ExecuteButton.Visible = true
-        ClearButton.Visible = true
-        ConsoleToggle.Visible = true
-        CreditsToggle.Visible = true
-        SettingsButton.Visible = true
-        ScrollToggle.Visible = true
-        CloseButton.Visible = true
     else
         collapseUI()
-        ToggleButton.Visible = false
-        TextBox.Visible = false
-        ExecuteButton.Visible = false
-        ClearButton.Visible = false
-        ConsoleToggle.Visible = false
-        CreditsToggle.Visible = false
-        SettingsButton.Visible = false
-        ScrollToggle.Visible = false
-        CloseButton.Visible = false
-        SettingsFrame.Visible = false
     end
-end)
+end
 
--- Execute Button logic
-ExecuteButton.MouseButton1Click:Connect(function()
+ImageButton.MouseButton1Click:Connect(toggleUI)
+
+-- Save Button function
+local function saveCode()
     local code = TextBox.Text
     if code and code ~= "" then
-        local success, result = pcall(function()
-            loadstring(code)()
-        end)
-        if success then
-            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nScript executed successfully."
-        else
-            ConsoleTextBox.Text = ConsoleTextBox.Text .. "\nError execute script please check u code(" .. result")
+        local fileName = "script.json"
+        local data = {
+            script_name = "script",
+            script = code
+        }
+        writefile(fileName, HttpService:JSONEncode(data))
+    end
+end
+
+SaveButton.MouseButton1Click:Connect(saveCode)
+
+-- Load saved script into TextBox
+local function loadSavedCode()
+    local fileName = "script.json"
+    if isfile(fileName) then
+        local data = HttpService:JSONDecode(readfile(fileName))
+        if data.script then
+            TextBox.Text = data.script
         end
     end
-end)
+end
 
--- Clear Button logic
+-- Load saved code on startup
+loadSavedCode()
+
+-- Close Button function
+local function closeUI()
+    local tween = TweenService:Create(Frame, TweenInfo.new(0.5), {Size = UDim2.new(0, 50, 0, 50)})
+    tween:Play()
+    tween.Completed:Connect(function()
+        Frame.Visible = false
+    end)
+end
+
+CloseButton.MouseButton1Click:Connect(closeUI)
+
+-- Console Toggle function
+local function toggleConsole()
+    ConsoleTextBox.Visible = not ConsoleTextBox.Visible
+end
+
+ConsoleToggle.MouseButton1Click:Connect(toggleConsole)
+
+-- Credits Toggle function
+local function toggleCredits()
+    CreditsTextBox.Visible = not CreditsTextBox.Visible
+end
+
+CreditsToggle.MouseButton1Click:Connect(toggleCredits)
+
+-- Clear Button function
 ClearButton.MouseButton1Click:Connect(function()
     TextBox.Text = ""
 end)
 
--- Close Button logic
-CloseButton.MouseButton1Click:Connect(function()
-    Frame.Visible = false
-end)
-
--- Credits Toggle Button logic
-CreditsToggle.MouseButton1Click:Connect(function()
-    CreditsTextBox.Visible = not CreditsTextBox.Visible
-end)
-
--- Console Toggle Button logic
-ConsoleToggle.MouseButton1Click:Connect(function()
-    ConsoleTextBox.Visible = not ConsoleTextBox.Visible
-end)
-
--- Scroll Toggle Button logic
-ScrollToggle.MouseButton1Click:Connect(function()
-    -- Implement scroll behavior here
-    if ConsoleTextBox.TextWrapped then
-        ConsoleTextBox.TextWrapped = false
-    else
-        ConsoleTextBox.TextWrapped = true
+-- Execute Button function
+ExecuteButton.MouseButton1Click:Connect(function()
+    local code = TextBox.Text
+    if code and code ~= "" then
+        loadstring(code)()
     end
 end)
 
--- Settings Button logic
-SettingsButton.MouseButton1Click:Connect(function()
-    SettingsFrame.Visible = not SettingsFrame.Visible
-end)
+-- Dragging functionality
+local dragging, dragInput, dragStart, startPos
 
--- Scroll Button logic in Settings Frame
-ScrollButton.MouseButton1Click:Connect(function()
-    -- Toggle Scroll setting
-    if ConsoleTextBox.TextWrapped then
-        ConsoleTextBox.TextWrapped = false
-    else
-        ConsoleTextBox.TextWrapped = true
+local function update(input)
+    local delta = input.Position - dragStart
+    Frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+local function onInputBegan(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+        dragging = true
+        dragStart = input.Position
+        startPos = Frame.Position
+        
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
     end
-end)
+end
+
+local function onInputChanged(input)
+    if dragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+        update(input)
+    end
+end
+
+UserInputService.InputBegan:Connect(onInputBegan)
+UserInputService.InputChanged:Connect(onInputChanged)
